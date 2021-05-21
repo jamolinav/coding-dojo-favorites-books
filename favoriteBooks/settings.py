@@ -84,7 +84,7 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql', # cambiar la base de datos a postgres
         'NAME': 'favorite_books_db', # nombre de la base de datos, se creará en el servidor de Postgres a continuación
-        'USER': 'juanmolina', # postgres para macOS o 'USER': 'postgres', para Windows
+        'USER': 'postgres', # postgres para macOS o 'USER': 'postgres', para Windows
         'PASSWORD': 'jamolinav', # contraseña a la que la cambió al instalar Postgres
         'HOST': '127.0.0.1', # dirección IP localhost
         'PORT': '5432', # puerto del servidor postgres predeterminado
