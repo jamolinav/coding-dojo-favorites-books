@@ -1,0 +1,38 @@
+{% extends 'favoritesApp/base.html' %}
+
+{% block head %}
+    {% load static %}
+    <script src="{% static 'favoritesApp/js/favoritesBooks.js' %}"></script>
+    <title>Favorites Books</title>
+{% endblock %}
+
+{% block header%}
+    <h1 class="d-flex justify-content-center page-title">Favorites Books</h1>
+{% endblock %}
+
+{% block content %}
+    {% load tz %}
+    {% timezone "America/Santiago" %}
+
+    {% if messages %}
+        <br>
+        <div class="valid-messages">
+            <ul class="messages" id="messages">
+                {% for message in messages %}
+                <li>{{message}}</li>
+                {% endfor %}
+            </ul>
+        </div>
+    {% endif %}
+    
+        <div class="tableFixHead table-wrapper" style="">
+            <hr>
+            <ul>
+                {% for book in all_favorites %}
+                <li>{{book.title}}</li>
+                {% endfor %}
+            </ul>
+        </div>
+
+    {% endtimezone %}
+{% endblock %}

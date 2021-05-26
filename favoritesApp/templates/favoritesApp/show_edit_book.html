@@ -1,0 +1,95 @@
+{% extends 'favoritesApp/base.html' %}
+
+{% block head %}
+    {% load static %}
+    <script src="{% static 'favoritesApp/js/favoritesBooks.js' %}"></script>
+    <title>Favorites Books</title>
+{% endblock %}
+
+{% block header%}
+    <h1 class="d-flex justify-content-center page-title">Favorites Books</h1>
+{% endblock %}
+
+{% block content %}
+    {% load tz %}
+    {% timezone "America/Santiago" %}
+
+    {% if messages %}
+        <br>
+        <div class="valid-messages">
+            <ul class="messages" id="messages">
+                {% for message in messages %}
+                <li>{{message}}</li>
+                {% endfor %}
+            </ul>
+        </div>
+    {% endif %}
+    
+        <div class="tableFixHead table-wrapper" style="display: flex; grid-template-columns: 100%;">
+            <form class="formRegister" action="{% url 'edit_delete_book' id_book=book.id %}" method="POST" >
+                <h4 class="d-flex justify-content-center page-title">{{book.title}}</h4>
+                {% csrf_token %}
+                <div class="django-form-wrapper">
+                    {% if edit %}
+                        <p>
+                            <label for="title">Título:</label>
+                                <input type="text" placeholder="<Título>" name="title" value="{{book.title}}">
+                        </p>
+                        <p>
+                            <label for="title">Added by:</label>
+                                {{book.uploaded_by}}
+                        </p>
+                        <p>
+                            <label for="title">Added on:</label>
+                                {{book.created_at}}
+                        </p>
+                        <p>
+                            <label for="title">Last updated on:</label>
+                                {{book.updated_at}}
+                        </p>
+                        <p>
+                            <label for="desc">Descripción:</label>
+                                <textarea name="desc" id="desc" cols="50%" rows="4" style="width: max-content; margin-top: 2%; margin-left: 42%;">{{book.desc}}</textarea>
+                        </p>
+                        <p style="display: flex; width: 50%; margin: 4% 0 0 10%;">
+                                <button type="submit" name="btnAction" value="update">Update</button>
+                                <button type="submit" name="btnAction" value="delete">Delete</button>
+                        </p>
+                        
+                    {% else %}
+                        <p>
+                            <label for="title">Título:</label>
+                            "{{book.title}}"
+                        </p>
+                    {% endif %}
+                    <br>
+                    
+                </div>
+                
+            </form>
+            <form class="formRegister" action="{% url 'edit_delete_book' id_book=book.id %}" method="POST" >
+                <h4 class="d-flex justify-content-center page-title">Users Who Like This Book:</h4>
+                
+                <div class="django-form-wrapper">
+                    
+                    <ul>
+                        {% for user in book_liked %}
+                        <li>{{user.first_name}}
+                            {% if user.email == request.session.logged_user %}
+                                <a href="{% url 'un_favorite_book' id_book=book.id %}">Un-Favorite</a>
+                            {% endif %}
+                        </li>
+                        {% endfor %}
+                    </ul>
+                    {% if book in my_favorites %}
+                        <p><label for="" style="color: darkseagreen; font-style: italic;">this is one of your favorites</label></p>
+                    {% else %}
+                        <a href="{% url 'add_favorite' id_book=book.id %}">Add to Favorites</a>
+                    {% endif %}
+                </div>
+                
+            </form>
+        </div>
+
+    {% endtimezone %}
+{% endblock %}

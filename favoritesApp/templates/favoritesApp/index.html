@@ -1,0 +1,75 @@
+{% extends 'favoritesApp/base.html' %}
+
+{% block head %}
+    {% load static %}
+    <script src="{% static 'favoritesApp/js/favoritesBooks.js' %}"></script>
+    <title>Favorites Books</title>
+{% endblock %}
+
+{% block header%}
+    <h1 class="d-flex justify-content-center page-title">Favorites Books</h1>
+{% endblock %}
+
+{% block content %}
+    {% load tz %}
+    {% timezone "America/Santiago" %}
+
+    {% if messages %}
+        <br>
+        <div class="valid-messages">
+            <ul class="messages" id="messages">
+                {% for message in messages %}
+                <li>{{message}}</li>
+                {% endfor %}
+            </ul>
+        </div>
+    {% endif %}
+    
+        <div class="tableFixHead table-wrapper" style="display: grid; grid-template-columns: 50% 50%;">
+            <form class="formRegister" action="{% url 'addBook' %}" method="POST" >
+                <h4 class="d-flex justify-content-center page-title">Add a Favorite Book</h4>
+                {% csrf_token %}
+                <div class="django-form-wrapper">
+                    {{ bookForm.as_p }}
+                    <br>
+                    <p><button type="submit">Add</button></p>
+                </div>
+                <a href="{% url 'all_favorites' %}">All your Favorites</a>
+            </form>
+            <div class="formRegister">
+                <h4 class="d-flex justify-content-center page-title">All Books</h4>
+                    <form action="{% url 'update_all_books_fav' %}" class="form-check form-switch" method="POST">
+                        {% csrf_token %}
+                        <div style="display:flex; height: 25px; margin-bottom: 10px;">
+                            <input type="checkbox" class="form-check-input" name="chk_all_books" id="flexSwitchCheckDefault"/>
+                            <label for="flexSwitchCheckDefault" class="form-check-label">Todos favoritos</label>
+                            <select name="user_selected" id="user_selected" class="form-select form-select-sm" aria-label=".form-select-sm example" style="margin: 0 20px">
+                                <option value="" disabled="" selected="" hidden="">Seleccione</option>
+                                {% for user in users %}
+                                    <option value="{{user.id}}" >{{user.first_name}} {{user.last_name}}</option>
+                                {% endfor %}
+                            </select>
+                            <select name="books_user" id="" class="form-select form-select-sm" aria-label=".form-select-sm example">
+                                <option value="" disabled="" selected="" hidden="">Seleccione</option>
+                            </select>
+                        </div>
+                        <button type="button" id="btn_update">Update</button>
+                    </form>
+                    <hr>
+                    {% for book in all_books %}
+                        <a href="{% url 'show_book' id_book=book.id %}">{{book.title}}</a>
+                        <p>
+                            <label>(added by {{book.uploaded_by.first_name}} {{book.uploaded_by.last_name}})</label>
+                        </p>
+                        {% if book in my_favorites %}
+                            <p><label for="" style="color: darkseagreen; font-style: italic;">this is one of your favorites</label></p>
+                        {% else %}
+                            <a href="{% url 'add_favorite' id_book=book.id %}">Add to Favorites</a>
+                        {% endif %}
+                        <hr>
+                    {% endfor %}
+                </div>
+        </div>
+
+    {% endtimezone %}
+{% endblock %}
